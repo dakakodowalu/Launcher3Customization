@@ -126,6 +126,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 
 /**
+ * 抽象的桌面。由N个cellLayout组成,从cellLayout更高一级的层面上对事件的处理。
  * The workspace is a wide area with a wallpaper and a finite number of pages.
  * Each page contains a number of icons, folders or widgets the user can
  * interact with. A workspace is meant to be used with a fixed width only.
@@ -1938,6 +1939,27 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     @Override
     public void prepareAccessibilityDrop() { }
 
+    /**
+     * 1. 获取拖放视图的中心坐标。
+     * 2. 获取拖放目标的布局。
+     * 3. 如果有拖放目标布局，则将坐标映射到该布局上。
+     * 4. 初始化一些变量，包括标记是否拖放到原始单元格、是否调整大小以及拖放完成后的回调方法。
+     * 5. 判断拖放来源是否为当前对象，并检查是否有有效的拖放信息。
+     * 6. 如果拖放来源不是当前对象或者拖放信息为空，则处理外部拖放操作。
+     * 7. 如果有拖放目标布局，并且拖放操作没有被取消，则在内部移动图标。
+     * 8. 找到最近的空闲单元格位置。
+     * 9. 如果拖放的是快捷方式，并且最近的单元格中也包含快捷方式，则创建一个文件夹包含这两个快捷方式。
+     * 10. 如果不是拖放到快捷方式上，需要找到最近的空闲单元格位置。
+     * 11. 检查是否需要创建新的文件夹或将图标添加到现有文件夹。
+     * 12. 判断是否将图标放回原始位置以防止工作区重排。
+     * 13. 如果需要将图标放回原始位置，则计算新的最近空闲单元格位置。
+     * 14. 如果拖放到原始单元格上，标记为拖放到原始单元格。
+     * 15. 判断是否正在切换状态并且在原始单元格上进行拖放。
+     * 16. 将拖放的图标返回到原始位置。
+     * 17. 更新图标的位置信息并保存到数据库。
+     * 18. 如果图标调整大小，则设置调整大小标志。
+     * 19. 如果有回调方法，则运行回调方法。
+     */
     @Override
     public void onDrop(final DragObject d, DragOptions options) {
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);

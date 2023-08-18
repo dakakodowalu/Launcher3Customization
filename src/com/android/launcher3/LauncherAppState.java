@@ -52,6 +52,16 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_THEMED_ICONS;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
+/***
+ * 这个类是 Launcher3 应用程序的核心类之一，它负责管理应用程序的状态和数据。它包含了一个单例模式，确保只有一个 LauncherAppState 实例存在，同时提供了访问该实例的方法。
+ * 该类的主要职责包括：
+ *         管理应用程序的上下文环境和设备配置信息；
+ *         创建和管理 LauncherModel 实例，该实例负责加载和管理所有应用程序和快捷方式的数据；
+ *         创建和管理 IconCache 实例，该实例负责缓存所有应用程序和快捷方式的图标；
+ *         创建和管理 LauncherIconProvider 实例，该实例负责提供应用程序的图标信息；
+ *         监听应用程序、系统图标、用户变化等事件，并根据变化刷新和重载 LauncherModel 实例；
+ *         注册和取消注册广播接收器、回调等。
+ */
 public class LauncherAppState implements SafeCloseable {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";

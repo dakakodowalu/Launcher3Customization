@@ -87,6 +87,16 @@ import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
+/**
+ * LauncherProvider 是 Launcher3 应用程序的内容提供者，它与 Launcher 类一起工作，负责管理应用程序的数据和状态。具体来说，LauncherProvider 提供了以下功能：
+ * 1.存储和管理应用程序和快捷方式的数据：LauncherProvider 存储应用程序和快捷方式的数据，如应用程序的包名、类名、图标、名称等信息，以及快捷方式的标题、图标、意图等信息。
+ * 这些数据存储在 SQLite 数据库中，LauncherProvider 提供了对 SQLite 数据库的访问和管理。
+ * 2.提供数据访问接口：LauncherProvider 提供了一些公共的数据访问接口，供其他应用程序和组件访问应用程序和快捷方式的数据。
+ * 这些接口包括查询应用程序、查询快捷方式、添加应用程序等。
+ * 3.实现数据同步：LauncherProvider 实现了数据同步功能，它可以将应用程序和快捷方式的数据同步到其他设备或云端存储。
+ * 4.管理应用程序和快捷方式的状态：LauncherProvider 管理应用程序和快捷方式的状态，例如应用程序和快捷方式是否已安装，是否可见等。
+ * 当应用程序或快捷方式的状态发生变化时，LauncherProvider 会更新相应的数据。
+ */
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;

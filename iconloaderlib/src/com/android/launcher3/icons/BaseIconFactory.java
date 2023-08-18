@@ -37,6 +37,7 @@ import static com.android.launcher3.icons.BitmapInfo.FLAG_WORK;
 import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
 
 /**
+ * Launcher图标的工厂类，控制图标UI展示（图标白边控制）
  * This class will be moved to androidx library. There shouldn't be any dependency outside
  * this package.
  */

@@ -110,6 +110,7 @@ import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelUtils;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.StringCache;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -203,6 +204,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PIN_WIDGETS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
@@ -234,6 +236,7 @@ import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 
 /**
+ *  launcher主要的activity，是launcher桌面第一次启动的activity，UI的主要入口。
  * Default launcher application.
  */
 public class Launcher extends StatefulActivity<LauncherState>
@@ -388,6 +391,16 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private StringCache mStringCache;
 
+
+    /**
+     * 该方法首先使用 Trace 类和 TraceHelper 类开始跟踪应用程序的性能，然后根据设备版本设置 StrictMode 策略。
+     * 接着，如果是调试设备且启用了 FeatureFlags.NOTIFY_CRASHES 功能，会创建一个悬浮通知，并设置一个未捕获异常处理程序。
+     * 然后调用父类的 onCreate 方法，加载应用程序的布局资源，初始化设备配置信息和 LauncherAppState 实例等。
+     * 接下来，创建并初始化 Launcher 的各种属性和控制器，如旋转控制器、设备配置信息、页面状态管理器、视图控制器等。
+     * 接着，注册广播接收器、监听器等，恢复 Activity 的状态，绑定 LauncherModel 实例等。
+     * 最后，设置应用程序的标题并调用回调方法。
+     *
+     */
     @Override
     @TargetApi(Build.VERSION_CODES.S)
     protected void onCreate(Bundle savedInstanceState) {
@@ -493,6 +506,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         restoreState(savedInstanceState);
         mStateManager.reapplyState();
 
+
         if (savedInstanceState != null) {
             int[] pageIds = savedInstanceState.getIntArray(RUNTIME_STATE_CURRENT_SCREEN_IDS);
             if (pageIds != null) {
@@ -541,6 +555,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
         setTitle(R.string.home_screen);
+
+        setIminWidget();
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -1827,6 +1843,13 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
     }
 
+    /**
+     * 首先，方法将传入的参数赋值给info对象的相应属性。container参数指定项目的容器类型，screenId参数指定项目所在的屏幕ID，cell参数指定项目在网格布局中的位置，spanX和spanY参数指定项目的大小。
+     * 接下来，根据项目的类型（itemType），使用switch语句执行相应的操作。
+     * 如果项目是自定义小部件（ITEM_TYPE_CUSTOM_APPWIDGET）或小部件（ITEM_TYPE_APPWIDGET），则调用addAppWidgetFromDrop方法，该方法将把info对象转换为PendingAddWidgetInfo并添加小部件到启动器。
+     * 如果项目是快捷方式（ITEM_TYPE_SHORTCUT），则调用processShortcutFromDrop方法，该方法将把info对象转换为PendingAddShortcutInfo并处理快捷方式相关的逻辑。
+     * 如果项目类型未知，则抛出IllegalStateException异常，表示未知的项目类型。
+     */
     public void addPendingItem(PendingAddItemInfo info, int container, int screenId,
             int[] cell, int spanX, int spanY) {
         info.container = container;
@@ -3276,4 +3299,72 @@ public class Launcher extends StatefulActivity<LauncherState>
             return false; // Return false to continue iterating through all the items.
         });
     }
+
+    private void addIminAppWidgetFromDrop(String widgetPack , String widgetClass ,int cellX , int cellY , int spanX , int spanY , int screenId){
+        //id= 11 , cellX= 1 , cellY= 1 , spanX= 2 , spanY= 1 , rank= 0 , screenId= 0 , itemType= 4 , container= -100
+        List<WidgetsListBaseEntry> appWidgets = mPopupDataProvider.getAllWidgets();
+        Log.d(TAG, "imin Launcher addIminAppWidgetFromDrop appWidgets= " + appWidgets.size());
+        for(WidgetsListBaseEntry app : appWidgets) {
+            if (widgetPack.equals(app.mPkgItem.packageName)) {
+                List<WidgetItem> widgets = app.mWidgets;
+                Log.d(TAG, "imin Launcher addIminAppWidgetFromDrop widgets= " + widgets.size());
+                for (WidgetItem apps : widgets) {
+                    Log.d(TAG, "imin Launcher addIminAppWidgetFromDrop widgetInfo= " + apps.widgetInfo
+                            + " , getClassName= " + apps.widgetInfo.provider.getClassName());
+                    if (widgetClass.equals(apps.widgetInfo.provider.getClassName())) {
+                        Log.d(TAG, "imin Launcher addIminAppWidgetFromDrop ** widgetInfo= " + apps.widgetInfo);
+                        PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(apps.widgetInfo, CONTAINER_PIN_WIDGETS);
+                        pendingInfo.cellX = cellX;
+                        pendingInfo.cellX = cellX;
+                        pendingInfo.cellY = cellY;
+                        pendingInfo.spanX = spanX;
+                        pendingInfo.spanY = spanY;
+                        pendingInfo.rank = 0;
+                        pendingInfo.screenId = screenId;
+                        pendingInfo.itemType = 4;
+                        pendingInfo.container = -100;
+                        addAppWidgetFromDrop(pendingInfo);
+                        saveClockWidgetFlagBySP(getApplicationContext(), "record_widget_flag");
+                    }
+                }
+            }
+        }
+    }
+
+
+    private void saveClockWidgetFlagBySP(Context context, String value) {
+        SharedPreferences sp = context.getSharedPreferences("imin_clock_widget", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("imin_widget_key", value);
+        editor.apply();
+    }
+
+    private String getClockWidgetFlagSP(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("imin_clock_widget", Context.MODE_PRIVATE);
+        String value = sp.getString("imin_widget_key", null);
+        return value;
+    }
+
+    private void setIminWidget(){
+        mHandler.post(new Runnable(){
+            public void run() {
+                Log.d(TAG , "imin Launcher onCreate 495 getAllWidgets= " + mPopupDataProvider.getAllWidgets());
+                if(mPopupDataProvider.getAllWidgets().size() > 0){
+                    setIminWidgetDefaultDisplay();
+                    return;
+                }
+                mHandler.postDelayed(this , 1000);
+            }
+        });
+    }
+
+    private void setIminWidgetDefaultDisplay() {
+        String defaultStr = getClockWidgetFlagSP(getApplicationContext());
+        if(defaultStr != null && "record_widget_flag".equals(defaultStr)){
+            return;
+        }
+//        addIminAppWidgetFromDrop("com.google.android.googlequicksearchbox" , "com.android.quicksearchbox.SearchWidgetProvider" , 0 , 0 , 4 , 1 , 1);//quicksearchbox
+        addIminAppWidgetFromDrop("com.google.android.deskclock" , "com.android.alarmclock.DigitalAppWidgetProvider" , 0 , 1 , 4 , 1 , 0);//deskclock
+    }
+
 }

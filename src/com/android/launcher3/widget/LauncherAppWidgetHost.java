@@ -212,7 +212,12 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     public void addPendingView(int appWidgetId, PendingAppWidgetHostView view) {
         mPendingViews.put(appWidgetId, view);
     }
-
+    /**
+     * 首先，检查小部件是否为自定义小部件（isCustomWidget()）。如果是自定义小部件，将创建一个LauncherAppWidgetHostView，设置小部件并调用自定义小部件管理器（CustomWidgetManager.INSTANCE）的onViewCreated()方法进行进一步处理，然后返回创建的视图。
+     * 如果小部件不是自定义小部件，并且当前没有设置监听（mFlags & FLAG_LISTENING为0），则创建一个DeferredAppWidgetHostView视图，并设置小部件ID和小部件信息，然后将视图添加到mViews集合中，并返回创建的视图。
+     * 如果小部件不是自定义小部件，并且当前设置了监听，则尝试调用父类的super.createView()方法来创建视图。如果在创建过程中出现异常，并且不是由于Binder大小错误引起的异常（Utilities.isBinderSizeError(e)），则抛出RuntimeException。
+     * 如果异常是由于Binder大小错误引起的，则获取已创建的视图（mViews.get(appWidgetId)）或通过调用onCreateView()方法创建视图。然后，将小部件ID和小部件信息设置到视图中，并切换到错误视图（switchToErrorView()），最后返回该视图。
+     */
     public AppWidgetHostView createView(Context context, int appWidgetId,
             LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget()) {

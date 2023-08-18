@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
+ * PMS安装应用后更新Launcher3图标及逻辑的实现类
  * Handles updates due to changes in package manager (app installed/updated/removed)
  * or when a user availability changes.
  */

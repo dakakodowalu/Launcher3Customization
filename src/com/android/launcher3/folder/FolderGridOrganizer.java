@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 展开文件夹显示的计算逻辑类，文件夹图标呈现是网格状，此类主要给文件夹各应用图标制定显示规则，比如3*4,4*4。
  * Utility class for managing item positions in a folder based on rank
  */
 public class FolderGridOrganizer {

@@ -75,6 +75,24 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     }
 
     /**
+     * 获取小部件的信息（LauncherAppWidgetProviderInfo）。
+     * 如果小部件是自定义小部件（isCustomWidget()返回true），则返回false，不进行预加载。
+     * 获取默认的尺寸选项（getDefaultSizeOptions()）。
+     * 如果小部件有配置活动（configuration activity），则设置绑定选项（bindOptions）为默认尺寸选项，并返回false。
+     * 创建一个Runnable对象mBindWidgetRunnable，用于绑定小部件。
+     * 在mBindWidgetRunnable的run()方法中，分配一个小部件ID（mWidgetLoadingId）。
+     * 如果允许绑定小部件ID（bindAppWidgetIdIfAllowed()），则绑定小部件ID并调用mInflateWidgetRunnable。
+     * 创建一个Runnable对象mInflateWidgetRunnable，用于填充小部件。
+     * 在mInflateWidgetRunnable的run()方法中，检查mWidgetLoadingId是否为-1，如果是，则返回。
+     * 使用小部件ID和小部件信息创建AppWidgetHostView。
+     * 将小部件的boundWidget设置为hostView。
+     * 清除小部件的mWidgetLoadingId。
+     * 将hostView设置为不可见，并计算小部件的未缩放尺寸。
+     * 创建DragLayer.LayoutParams参数，并设置小部件的大小和位置。
+     * 将hostView添加到拖动层（DragLayer）中。
+     * 将小部件的信息设置为mView的标签。
+     * 调度绑定/填充小部件的任务。
+     * 返回true表示预加载小部件成功。
      * Start preloading the widget.
      */
     private boolean preloadWidget() {

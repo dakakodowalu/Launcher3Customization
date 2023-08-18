@@ -1,5 +1,8 @@
 package com.android.launcher3.folder;
 
+/**
+ * 文件夹图标内部显示小图标缩略图的计算类，常见4宫格9宫格显示的实现类
+ */
 public class ClippedFolderIconLayoutRule {
 
     public static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;

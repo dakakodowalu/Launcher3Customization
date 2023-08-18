@@ -108,6 +108,7 @@ import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermis
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 
 /**
+ * 加载各个模块Task的显示类，如workspace工作区icon、all工作区icon初始化工作。
  * Runnable for the thread that loads the contents of the launcher:
  *   - workspace icons
  *   - widgets

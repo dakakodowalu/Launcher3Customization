@@ -49,6 +49,9 @@ import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 
+/**
+ * 图标大小、各个图标间距，布局等计算实体类，可配置各个参数的全局变量。
+ */
 @SuppressLint("NewApi")
 public class DeviceProfile {
 

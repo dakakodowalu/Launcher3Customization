@@ -81,6 +81,12 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.dragndrop.DraggableView.DRAGGABLE_ICON;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
+/**
+ * Launcher布局的计算类，图标的显示边距等，组成workspace
+ * 的view,继承自viewgroup，既是一个dragSource又是一个dropTarget,可以将它里面
+ * 的item拖出去，也可以容纳拖动过来的item。在workspace_screen里面定了一些它
+ * 的view参数。
+ */
 public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;

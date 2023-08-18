@@ -53,6 +53,29 @@ public class LauncherDragController extends DragController<Launcher> {
         mFlingToDeleteHelper = new FlingToDeleteHelper(launcher);
     }
 
+    /**
+     * 如果启用了调试跟踪，并且打印调试消息。
+     * 隐藏键盘并关闭打开的浮动视图。
+     * 设置拖动选项。
+     * 如果存在模拟的拖放起始点，则更新最后触摸点为模拟起始点。
+     * 计算注册点在拖动层上的位置。
+     * 获取拖动区域的左边界和顶部边界。
+     * 初始化拖动对象，并设置原始视图。
+     * 如果在预拖动阶段（pre-drag），则设置比例尺寸。
+     * 创建拖动视图（DragView），如果存在绘制图像（drawable），则使用图像创建，否则使用视图创建。
+     * 设置拖动对象的信息，包括拖动项的信息。
+     * 设置拖动对象的偏移量。
+     * 创建拖动驱动器（DragDriver），并设置拖动对象和拖动源。
+     * 如果不是无障碍拖动，则创建拖动视图状态的公告。
+     * 设置拖动视图的可视化偏移和拖动区域。
+     * 执行触觉反馈。
+     * 显示拖动视图，并初始化距离滚动的距离。
+     * 如果不是预拖动阶段，则调用callOnDragStart()方法。
+     * 如果是预拖动阶段且存在预拖动条件，则调用预拖动条件的onPreDragStart()方法。
+     * 处理初始移动事件。
+     * 如果当前没有进行触摸操作且不存在模拟的拖放起始点，则立即取消拖动操作。
+     * 返回拖动视图对象。
+     */
     @Override
     protected DragView startDrag(
             @Nullable Drawable drawable,

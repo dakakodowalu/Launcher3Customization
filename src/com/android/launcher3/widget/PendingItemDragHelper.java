@@ -86,6 +86,13 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     }
 
     /**
+     * 如果启用了调试跟踪，并且打印调试消息。
+     * 获取对启动器（launcher）和应用程序实例的引用。
+     * 初始化预览、预览尺寸、缩放比例、拖动偏移和拖动区域的变量。
+     * 如果待处理项是一个小部件（PendingAddWidgetInfo），则执行特定于小部件的额外操作。创建小部件的预览图像、测量其尺寸、设置填充并进行缩放。如果需要，还调整预览边界。
+     * 如果待处理项是一个快捷方式（PendingAddShortcutInfo），则创建快捷方式图标的预览图像，进行缩放，并设置拖动偏移和拖动区域。
+     * 基于屏幕位置、预览边界和缩放比例计算拖动层的坐标。
+     * 最后，使用启动器（launcher）中的DragController启动拖动操作。如果存在小部件预览
      * Starts the drag for the pending item associated with the view.
      *
      * @param previewBounds The bounds where the image was displayed,

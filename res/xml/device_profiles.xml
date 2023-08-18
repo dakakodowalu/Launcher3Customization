@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+默认Launcher的网格配置，主要包括一下几点：
+
+                       a. workspace的行和列；
+
+                       b. 文件夹中配置的行和列；
+
+                       c. 图标大小；
+
+                       d. 图标名称文字大小；
+
+                       e. 默认选择加载哪个网格xml的配置文件。
+
      Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +25,8 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
+
+
 -->
 
 <profiles xmlns:launcher="http://schemas.android.com/apk/res-auto" >

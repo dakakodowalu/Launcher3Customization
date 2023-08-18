@@ -78,6 +78,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 /**
+ * Launcher所有图标文字显示的父类，包括文字的大小，文字刷新的的父类。
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.

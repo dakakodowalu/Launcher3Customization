@@ -54,6 +54,7 @@ import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import java.net.URISyntaxException;
 
 /**
+ * 长按APP图标的操作类，对图标进行移动、删除、移除、取消、卸载等操作。
  * Drop target which provides a secondary option for an item.
  *    For app targets: shows as uninstall
  *    For configurable widgets: shows as setup
