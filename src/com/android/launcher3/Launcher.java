@@ -556,6 +556,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         setTitle(R.string.home_screen);
 
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
         setIminWidget();
     }
 
@@ -3364,7 +3368,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             return;
         }
 //        addIminAppWidgetFromDrop("com.google.android.googlequicksearchbox" , "com.android.quicksearchbox.SearchWidgetProvider" , 0 , 0 , 4 , 1 , 1);//quicksearchbox
-        addIminAppWidgetFromDrop("com.google.android.deskclock" , "com.android.alarmclock.DigitalAppWidgetProvider" , 0 , 1 , 4 , 1 , 0);//deskclock
+//        addIminAppWidgetFromDrop("com.google.android.deskclock" , "com.android.alarmclock.DigitalAppWidgetProvider" , 0 , 1 , 4 , 1 , 0);//deskclock
+        addIminAppWidgetFromDrop("com.hyundai.studygroup" , "com.hyundai.study.zhougaoyan.widget.ZGYAppWidget" , 0 , 1 , 1 , 1 , 0);
     }
 
 }

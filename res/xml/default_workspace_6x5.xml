@@ -64,11 +64,21 @@
     </resolve>
 
     <!-- Resolve camera intent if GoogleCamera is not available e.g. on emulator -->
+<!--    <resolve-->
+<!--        launcher:container="-101"-->
+<!--        launcher:screen="5"-->
+<!--        launcher:x="5"-->
+<!--        launcher:y="0" >-->
+<!--        <favorite launcher:uri="#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end" />-->
+<!--        <favorite launcher:uri="#Intent;action=android.intent.action.CAMERA_BUTTON;end" />-->
+<!--    </resolve>-->
+
+    <!-- 此处修改container对应不同的位置 -->
     <resolve
-        launcher:container="-101"
-        launcher:screen="5"
+        launcher:container="-100"
+        launcher:screen="0"
         launcher:x="5"
-        launcher:y="0" >
+        launcher:y="4" >
         <favorite launcher:uri="#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end" />
         <favorite launcher:uri="#Intent;action=android.intent.action.CAMERA_BUTTON;end" />
     </resolve>

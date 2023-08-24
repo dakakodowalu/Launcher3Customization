@@ -48,6 +48,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+       
     }
 
     // 签名
@@ -165,6 +167,10 @@ android {
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
+    buildFeatures {
+        aidl true
+    }
+
 }
 
 allprojects {

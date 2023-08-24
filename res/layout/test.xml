@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/system_shortcut_icons"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/system_shortcut_header_height"
+    android:orientation="horizontal"
+    android:gravity="end|center_vertical"
+    android:background="@drawable/single_item_primary"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:clipToPadding="true">
+
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

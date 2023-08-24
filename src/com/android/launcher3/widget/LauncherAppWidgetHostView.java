@@ -16,19 +16,33 @@
 
 package com.android.launcher3.widget;
 
+import static android.content.Context.BIND_AUTO_CREATE;
+
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -37,6 +51,7 @@ import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CheckLongPressHelper;
@@ -48,6 +63,8 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
+
+import java.util.zip.Inflater;
 
 /**
  * {@inheritDoc}
@@ -156,8 +173,48 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
         mDeferredRemoteViews = null;
 
-        super.updateAppWidget(remoteViews);
 
+
+
+//        super.updateAppWidget(remoteViews);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.test, null, false);
+        surfaceView = view.findViewById(R.id.surface_view);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(@NonNull SurfaceHolder holder) {
+
+            }
+
+            @Override
+            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+//                sendToOtherApp(holder.getSurface(), format, width, height);
+
+                Intent intent = new Intent(getContext(), SurfaceProviderService.class);
+                intent.putExtra("surface", surfaceView.getHolder().getSurface());
+
+                ServiceConnection serviceConnection = new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder service) {
+                        Log.e(TAG, "onServiceConnected: ZGY");
+                        // 在这里可以执行与Service交互的操作
+                    }
+
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+                        // Service断开连接时的处理
+                    }
+                };
+
+                getContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+            }
+
+            @Override
+            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+            }
+        });
+        addView(view);
         // The provider info or the views might have changed.
         checkIfAutoAdvance();
 
@@ -166,6 +223,14 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
         mReinflateOnConfigChange = !isSameOrientation();
+    }
+
+
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+
+    private void sendToOtherApp(Surface surface, int format, int width, int height){
+
     }
 
     private boolean isSameOrientation() {
