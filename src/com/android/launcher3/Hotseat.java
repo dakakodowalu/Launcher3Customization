@@ -65,7 +65,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
         mQsbHeight = getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
 
-
+        setVisibility(GONE);
     }
 
     /**
@@ -92,6 +92,8 @@ public class Hotseat extends CellLayout implements Insettable {
         } else {
             setGridSize(dp.numShownHotseatIcons, 1);
         }
+
+        setVisibility(GONE);
     }
 
     @Override
@@ -122,10 +124,13 @@ public class Hotseat extends CellLayout implements Insettable {
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
+
+        setVisibility(GONE);
     }
 
     public void setWorkspace(Workspace<?> w) {
         mWorkspace = w;
+        setVisibility(GONE);
     }
 
     @Override
@@ -164,6 +169,8 @@ public class Hotseat extends CellLayout implements Insettable {
         if (mOnVisibilityAggregatedCallback != null) {
             mOnVisibilityAggregatedCallback.accept(isVisible);
         }
+
+        setVisibility(GONE);
     }
 
     /** Sets a callback to be called onVisibilityAggregated */
