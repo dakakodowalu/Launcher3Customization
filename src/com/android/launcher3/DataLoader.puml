@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+LauncherProvider -> LauncherProvider: createDbIfNotExists()
+LauncherProvider -> DatabaseHelper: createDatabaseHelper()
+DatabaseHelper -> DatabaseHelper: onCreate()
+DatabaseHelper -> DatabaseHelper: addFavoritesTable()
+DatabaseHelper -> Favorites: addTableToDb()
+Favorites --> DatabaseHelper
+DatabaseHelper -> DatabaseHelper: onEmptyDbCreated()
+DatabaseHelper -> SharedPreferences: EMPTY_DATABASE_CREATED
+
+
+
+
+Launcher -> Launcher: onCreate()
+Launcher -> Launcher: setupViews()
+Launcher -> LauncherModel: addCallbacksAndLoad
+LauncherModel -> LauncherModel: startLoader()
+LauncherModel -> LoaderTask: LoaderTask()
+LoaderTask -> LoaderTask: run()
+
+LoaderTask -> LoaderTask: loadWorkspace()
+LoaderTask -> LauncherSettings.Settings: call()
+LauncherSettings.Settings -> LauncherProvider: call()
+LLauncherProvider -> LauncherProvider: loadDefaultFavoritesIfNecessary()
+
+
+LoaderTask -> LoaderTask: bindWorkspace()
+LoaderTask -> LoaderTask: waitForIdle()
+LoaderTask -> LoaderTask: sendFirstScreenActiveInstallsBroadcast() 发送首屏广播
+LoaderTask -> LoaderTask: loadAllApps()
+LoaderTask -> LoaderTask: bindAllApps()
+LoaderTask -> LoaderTask: loadDeepShortcuts()
+LoaderTask -> LoaderTask: bindDeepShortcuts ()
+LoaderTask --> LauncherModel: loaderResults
+LauncherModel --> Launcher
+
+@enduml

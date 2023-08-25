@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+LauncherProvider -> LauncherProvider: createDbIfNotExists()
+LauncherProvider -> DatabaseHelper: createDatabaseHelper()
+DatabaseHelper -> DatabaseHelper: onCreate()
+DatabaseHelper -> DatabaseHelper: addFavoritesTable()
+DatabaseHelper -> Favorites: addTableToDb()
+Favorites --> DatabaseHelper
+DatabaseHelper -> DatabaseHelper: onEmptyDbCreated()
+DatabaseHelper -> SharedPreferences: EMPTY_DATABASE_CREATED
+
+LauncherProvider -> LauncherProvider: call->loadDefaultFavoritesIfNecessary()
+
+
+@enduml

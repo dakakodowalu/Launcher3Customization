@@ -356,6 +356,7 @@ public class LoaderTask implements Runnable {
             Uri contentUri,
             String selection,
             @Nullable LoaderMemoryLogger logger) {
+        //先创建一些对象
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);

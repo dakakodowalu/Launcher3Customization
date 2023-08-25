@@ -491,6 +491,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHost.startListening();
 
         inflateRootView(R.layout.launcher);
+        // 初始化View，进行各种View的初始化事件绑定
         setupViews();
         crossFadeWithPreviousAppearance();
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
@@ -514,6 +515,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             }
         }
 
+        // 加载、绑定数据（这里与之前版本的 startLoader() 作用一样）
+        // 重点关注 addCallbacksAndLoad()
         if (!mModel.addCallbacksAndLoad(this)) {
             if (!internalStateHandled) {
                 Log.d(BAD_STATE, "Launcher onCreate not binding sync, prevent drawing");

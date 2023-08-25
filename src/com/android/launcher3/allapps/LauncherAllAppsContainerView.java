@@ -39,6 +39,8 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
 
     public LauncherAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+//        setVisibility(GONE);
     }
 
     @Override

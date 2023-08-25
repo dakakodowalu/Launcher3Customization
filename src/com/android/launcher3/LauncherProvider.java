@@ -678,6 +678,7 @@ public class LauncherProvider extends ContentProvider {
             if (dbName == null) {
                 dbName = InvariantDeviceProfile.INSTANCE.get(context).dbFile;
             }
+            //创建数据库
             DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName, forMigration);
             // Table creation sometimes fails silently, which leads to a crash loop.
             // This way, we will try to create a table every time after crash, so the device
@@ -716,7 +717,7 @@ public class LauncherProvider extends ContentProvider {
             if (LOGD) Log.d(TAG, "creating new launcher database");
 
             mMaxItemId = 1;
-
+            //建表
             addFavoritesTable(db, false);
 
             // Fresh and clean launcher DB.
