@@ -53,6 +53,10 @@ Workspace --> LoaderResults.WorkspaceBinder
 LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindWorkspaceItems()
 LoaderResults.WorkspaceBinder -> Launcher:bindItems()
 Launcher -> Launcher:createShortcut()\nFolderIcon.inflateFolderAndIcon()\ninflateAppWidget()
+Launcher -> Workspace:addInScreenFromBind()
+Workspace -> Workspace:addInScreen()
+Workspace -> CellLayout:addViewToCellLayout()
+Workspace -> Launcher:view.setOnLongClickListener()
 LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindAppWidgets()
 LoaderResults.WorkspaceBinder -> Launcher:finishBindingItems()
 
