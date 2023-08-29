@@ -552,8 +552,10 @@ public class LauncherProvider extends ContentProvider {
             Log.d(TAG, "loading default workspace");
 
             AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
+            // 获取布局，第一种
             AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHost);
             if (loader == null) {
+                //第二种
                 loader = AutoInstallsLayout.get(getContext(), widgetHost, mOpenHelper);
             }
             if (loader == null) {
@@ -563,6 +565,7 @@ public class LauncherProvider extends ContentProvider {
                     int workspaceResId = partnerRes.getIdentifier(Partner.RES_DEFAULT_LAYOUT,
                             "xml", partner.getPackageName());
                     if (workspaceResId != 0) {
+                        //第三种
                         loader = new DefaultLayoutParser(getContext(), widgetHost,
                                 mOpenHelper, partnerRes, workspaceResId);
                     }
@@ -571,6 +574,7 @@ public class LauncherProvider extends ContentProvider {
 
             final boolean usingExternallyProvidedLayout = loader != null;
             if (loader == null) {
+                //第四种(最常用)
                 loader = getDefaultLayoutParser(widgetHost);
             }
 
@@ -580,6 +584,7 @@ public class LauncherProvider extends ContentProvider {
             // previous versions of launcher.
             mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
             // Populate favorites table with initial favorites
+            //xml文件的内容解析并放入数据库
             if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
                     && usingExternallyProvidedLayout) {
                 // Unable to load external layout. Cleanup and load the internal layout.

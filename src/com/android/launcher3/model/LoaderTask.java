@@ -392,6 +392,7 @@ public class LoaderTask implements Runnable {
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
+            //获取数据库
             final LoaderCursor c = new LoaderCursor(
                     contentResolver.query(contentUri, null, selection, null, null), contentUri,
                     mApp, mUserManagerState);
@@ -457,10 +458,22 @@ public class LoaderTask implements Runnable {
                         }
 
                         boolean allowMissingTarget = false;
+                        //按类型区分
+                        //图标类型
                         switch (c.itemType) {
                         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                         case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                            //解析快捷方式的intent并检查其有效性。
+                            //根据用户的设置确定禁用状态。
+                            //确定快捷方式的目标包名，并检查其有效性。
+                            //处理非深度快捷方式的情况，包括检查目标组件是否存在，查找备用活动组件等。
+                            //处理目标包名无效的情况，如应用程序尚未恢复、包在SD卡上但不可用等。
+                            //根据快捷方式的类型和属性加载相应的图标，并创建相应的WorkspaceItemInfo对象。
+                            //将创建的WorkspaceItemInfo对象应用于快捷方式，并将其添加到数据模型中。
+
+                            //获取intent
+                            //来自xml(首次)\packmanager\快捷方式生成的
                             intent = c.parseIntent();
                             if (intent == null) {
                                 c.markDeleted("Invalid or null intent");
@@ -536,6 +549,7 @@ public class LoaderTask implements Runnable {
                                     // Package is present but not available.
                                     disabledState |= WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE;
                                     // Add the icon on the workspace anyway.
+                                    // 这个时候仍然把图标放置到桌面上
                                     allowMissingTarget = true;
                                 } else if (!isSdCardReady) {
                                     // SdCard is not ready yet. Package might get available,
@@ -667,6 +681,7 @@ public class LoaderTask implements Runnable {
                                         }
                                 }
 
+                                //最终目的?
                                 c.checkAndAddItem(info, mBgDataModel, logger);
                             } else {
                                 throw new RuntimeException("Unexpected null WorkspaceItemInfo");

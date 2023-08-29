@@ -81,6 +81,7 @@ public abstract class BaseLoaderResults {
      */
     public void bindWorkspace(boolean incrementBindId) {
         // Save a copy of all the bg-thread collections
+        //屏幕数，桌面图标，桌面widget
         ArrayList<ItemInfo> workspaceItems = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
         final IntArray orderedScreenIds = new IntArray();
@@ -238,6 +239,7 @@ public abstract class BaseLoaderResults {
             filterCurrentWorkspaceItems(currentScreenIds, mAppWidgets, currentAppWidgets,
                     otherAppWidgets);
             final InvariantDeviceProfile idp = mApp.getInvariantDeviceProfile();
+            //将图标进行整理
             sortWorkspaceItemsSpatially(idp, currentWorkspaceItems);
             sortWorkspaceItemsSpatially(idp, otherWorkspaceItems);
 
@@ -248,6 +250,7 @@ public abstract class BaseLoaderResults {
             }, mUiExecutor);
 
             // Bind workspace screens
+            //核心
             executeCallbacksTask(c -> c.bindScreens(mOrderedScreenIds), mUiExecutor);
             Log.d(TAG, "bind: currentWorkspaceItems.size: "+ currentWorkspaceItems.size());
             // Load items on the current page.

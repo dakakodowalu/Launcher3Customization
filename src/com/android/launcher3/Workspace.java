@@ -625,6 +625,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
+        //添加屏幕
         addView(newScreen, insertIndex);
         mStateTransitionAnimation.applyChildState(
                 mLauncher.getStateManager().getState(), newScreen, insertIndex);

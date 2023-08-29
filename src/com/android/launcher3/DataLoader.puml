@@ -2,19 +2,6 @@
 'https://plantuml.com/sequence-diagram
 
 autonumber
-
-LauncherProvider -> LauncherProvider: createDbIfNotExists()
-LauncherProvider -> DatabaseHelper: createDatabaseHelper()
-DatabaseHelper -> DatabaseHelper: onCreate()
-DatabaseHelper -> DatabaseHelper: addFavoritesTable()
-DatabaseHelper -> Favorites: addTableToDb()
-Favorites --> DatabaseHelper
-DatabaseHelper -> DatabaseHelper: onEmptyDbCreated()
-DatabaseHelper -> SharedPreferences: EMPTY_DATABASE_CREATED
-
-
-
-
 Launcher -> Launcher: onCreate()
 Launcher -> Launcher: setupViews()
 Launcher -> LauncherModel: addCallbacksAndLoad
@@ -22,13 +9,54 @@ LauncherModel -> LauncherModel: startLoader()
 LauncherModel -> LoaderTask: LoaderTask()
 LoaderTask -> LoaderTask: run()
 
+
 LoaderTask -> LoaderTask: loadWorkspace()
-LoaderTask -> LauncherSettings.Settings: call()
-LauncherSettings.Settings -> LauncherProvider: call()
-LLauncherProvider -> LauncherProvider: loadDefaultFavoritesIfNecessary()
+'LoaderTask -> LauncherSettings.Settings: call()
+'LauncherSettings.Settings -> LauncherProvider: call()
+'
+'LauncherProvider -> LauncherProvider: createDbIfNotExists()数据库加载(call先调用也许)
+'LauncherProvider -> DatabaseHelper: createDatabaseHelper()
+'DatabaseHelper -> DatabaseHelper: onCreate()
+'DatabaseHelper -> DatabaseHelper: addFavoritesTable()
+'DatabaseHelper -> Favorites: addTableToDb()
+'Favorites --> DatabaseHelper
+'DatabaseHelper -> DatabaseHelper: onEmptyDbCreated()
+'DatabaseHelper -> SharedPreferences: EMPTY_DATABASE_CREATED
+'
+'LauncherProvider -> LauncherProvider: loadDefaultFavoritesIfNecessary()
+'LauncherProvider -> LauncherProvider: createWorkspaceLoaderFromAppRestriction()
+'LauncherProvider -> LauncherProvider.DatabaseHelper: createEmptyDB()
+'LauncherProvider -> LauncherProvider.DatabaseHelper: loadFavorites()
+'LauncherProvider -> LauncherProvider: clearFlagEmptyDbCreated()
+'
+'LauncherProvider -> LoaderCursor: LoaderCursor()
+'LauncherProvider -> LoaderCursor: markDeleted()(检查是否有效?无效删除)
+'LauncherProvider -> LoaderCursor: checkAndAddItem()(快捷方式3/Folder/widgets)
+'LauncherProvider -> IconCache: getTitlesAndIconsInBulk()
+'LauncherProvider -> IconRequestInfo: loadWorkspaceIcon()(加载图标的地方)
+'IconRequestInfo -> LauncherIcons: createIconBitmap()(加载图标的地方ShortcutIconResource/DB)
+'IconRequestInfo -> WorkspaceItemInfo: WorkspaceItemInfo.bitmap = iconInfo(更新图标)
+'LauncherProvider -> LoaderCursor: commitDeleted()
+'LauncherProvider -> LoaderCursor: commitRestoredItems()
+
+LoaderTask -> LoaderResults: bindWorkspace()从mBgDataModel提取\n屏幕数，桌面图标，桌面widget\n后创建WorkspaceBinder
+LoaderResults -> LoaderResults.WorkspaceBinder:new WorkspaceBinder().bind()
+LoaderResults.WorkspaceBinder -> Launcher:clearPendingBinds()
+LoaderResults.WorkspaceBinder -> Launcher:startBinding()
+LoaderResults.WorkspaceBinder -> Launcher:bindScreens()
+Launcher -> Launcher:bindAddScreens()
+Launcher -> Workspace:insertNewWorkspaceScreenBeforeEmptyScreen()
+Workspace -> Workspace:insertNewWorkspaceScreen()
+Workspace -> Workspace:CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(\n R.layout.workspace_screen, this, false /* attachToRoot */);()
+Workspace -> Workspace:addView()
+Workspace --> LoaderResults.WorkspaceBinder
+LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindWorkspaceItems()
+LoaderResults.WorkspaceBinder -> Launcher:bindItems()
+Launcher -> Launcher:createShortcut()\nFolderIcon.inflateFolderAndIcon()\ninflateAppWidget()
+LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindAppWidgets()
+LoaderResults.WorkspaceBinder -> Launcher:finishBindingItems()
 
 
-LoaderTask -> LoaderTask: bindWorkspace()
 LoaderTask -> LoaderTask: waitForIdle()
 LoaderTask -> LoaderTask: sendFirstScreenActiveInstallsBroadcast() 发送首屏广播
 LoaderTask -> LoaderTask: loadAllApps()
