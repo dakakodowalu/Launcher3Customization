@@ -247,6 +247,7 @@ public class LoaderTask implements Runnable {
             logASplit(logger, "loadAllApps");
 
             verifyNotStopped();
+            //设置是否显示抽屉
             if (MxSettings.getInstance().isDrawerEnable()) {
                 mResults.bindAllApps();
                 logASplit(logger, "bindAllApps");

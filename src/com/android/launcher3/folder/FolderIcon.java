@@ -172,8 +172,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     public static <T extends Context & ActivityContext> FolderIcon inflateFolderAndIcon(int resId,
             T activityContext, ViewGroup group, FolderInfo folderInfo) {
+        //打开后
         Folder folder = Folder.fromXml(activityContext);
-
+        //打开前图标
         FolderIcon icon = inflateIcon(resId, activityContext, group, folderInfo);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);

@@ -40,30 +40,39 @@ LoaderTask -> LoaderTask: loadWorkspace()
 'LauncherProvider -> LoaderCursor: commitRestoredItems()
 
 LoaderTask -> LoaderResults: bindWorkspace()从mBgDataModel提取\n屏幕数，桌面图标，桌面widget\n后创建WorkspaceBinder
-LoaderResults -> LoaderResults.WorkspaceBinder:new WorkspaceBinder().bind()
-LoaderResults.WorkspaceBinder -> Launcher:clearPendingBinds()
-LoaderResults.WorkspaceBinder -> Launcher:startBinding()
-LoaderResults.WorkspaceBinder -> Launcher:bindScreens()
-Launcher -> Launcher:bindAddScreens()
-Launcher -> Workspace:insertNewWorkspaceScreenBeforeEmptyScreen()
-Workspace -> Workspace:insertNewWorkspaceScreen()
-Workspace -> Workspace:CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(\n R.layout.workspace_screen, this, false /* attachToRoot */);()
-Workspace -> Workspace:addView()
-Workspace --> LoaderResults.WorkspaceBinder
-LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindWorkspaceItems()
-LoaderResults.WorkspaceBinder -> Launcher:bindItems()
-Launcher -> Launcher:createShortcut()\nFolderIcon.inflateFolderAndIcon()\ninflateAppWidget()
-Launcher -> Workspace:addInScreenFromBind()
-Workspace -> Workspace:addInScreen()
-Workspace -> CellLayout:addViewToCellLayout()
-Workspace -> Launcher:view.setOnLongClickListener()
-LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindAppWidgets()
-LoaderResults.WorkspaceBinder -> Launcher:finishBindingItems()
+'LoaderResults -> LoaderResults.WorkspaceBinder:new WorkspaceBinder().bind()
+'LoaderResults.WorkspaceBinder -> Launcher:clearPendingBinds()
+'LoaderResults.WorkspaceBinder -> Launcher:startBinding()
+'LoaderResults.WorkspaceBinder -> Launcher:bindScreens()
+'Launcher -> Launcher:bindAddScreens()
+'Launcher -> Workspace:insertNewWorkspaceScreenBeforeEmptyScreen()
+'Workspace -> Workspace:insertNewWorkspaceScreen()
+'Workspace -> Workspace:CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(\n R.layout.workspace_screen, this, false /* attachToRoot */);()
+'Workspace -> Workspace:addView()
+'Workspace --> LoaderResults.WorkspaceBinder
+'LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindWorkspaceItems()
+'LoaderResults.WorkspaceBinder -> Launcher:bindItems()
+'Launcher -> Launcher:createShortcut()\nFolderIcon.inflateFolderAndIcon()\ninflateAppWidget()
+'Launcher -> Workspace:addInScreenFromBind()
+'Workspace -> Workspace:addInScreen()
+'Workspace -> CellLayout:addViewToCellLayout()
+'Workspace -> Launcher:view.setOnLongClickListener()
+'LoaderResults.WorkspaceBinder -> LoaderResults.WorkspaceBinder:bindAppWidgets()一样走到bindItems()
+'LoaderResults.WorkspaceBinder -> Launcher:finishBindingItems()
 
 
 LoaderTask -> LoaderTask: waitForIdle()
 LoaderTask -> LoaderTask: sendFirstScreenActiveInstallsBroadcast() 发送首屏广播
+
+
 LoaderTask -> LoaderTask: loadAllApps()
+LoaderTask -> LauncherApps: getActivityList()
+LoaderTask -> mBgAllAppsList: add()
+LoaderTask -> mBgAllAppsList: addPromiseApp()
+LoaderTask -> mBgAllAppsList: updateSectionName()
+LoaderTask -> mBgAllAppsList: setFlags()
+
+
 LoaderTask -> LoaderTask: bindAllApps()
 LoaderTask -> LoaderTask: loadDeepShortcuts()
 LoaderTask -> LoaderTask: bindDeepShortcuts ()

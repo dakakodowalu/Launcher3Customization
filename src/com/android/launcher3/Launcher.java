@@ -2420,10 +2420,12 @@ public class Launcher extends StatefulActivity<LauncherState>
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
                     WorkspaceItemInfo info = (WorkspaceItemInfo) item;
+                    //创建BubbleTextView，设置 图标和label 点击事件 绿点 下载状态
                     view = createShortcut(info);
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
+                    //创建Folder和FolderIcon
                     view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item);
@@ -2431,6 +2433,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                 case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET: {
+                    //这里创建AppWidgetHostView调用updateAppWidget
                     view = inflateAppWidget((LauncherAppWidgetInfo) item);
                     if (view == null) {
                         continue;
@@ -2472,7 +2475,11 @@ public class Launcher extends StatefulActivity<LauncherState>
                 view.setAlpha(0f);
                 view.setScaleX(0f);
                 view.setScaleY(0f);
-                bounceAnims.add(createNewAppBounceAnimation(view, i));
+                bounceAnims.add(createNewAppBounceAnimation(view, i
+
+
+
+                ));
                 newItemsScreenId = item.screenId;
             }
 
@@ -2668,6 +2675,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
                 item.minSpanX = appWidgetInfo.minSpanX;
                 item.minSpanY = appWidgetInfo.minSpanY;
+                //这里创建AppWidgetHostView调用updateAppWidget
                 view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
             } else if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
                     && appWidgetInfo != null) {

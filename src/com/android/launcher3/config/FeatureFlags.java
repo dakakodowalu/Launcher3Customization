@@ -125,6 +125,8 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
             "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
 
+
+
     public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
@@ -375,7 +377,7 @@ public final class FeatureFlags {
     // add by codemx.cn----20220911----start
 
     // 是否显示抽屉默认值
-    public static final boolean LAUNCHER3_ENABLE_DRAWER = true;
+    public static final boolean LAUNCHER3_ENABLE_DRAWER = false;
 
     // 是否循环滑动
     public static final boolean LAUNCHER3_CIRCLE_SCROLL = true;
@@ -399,4 +401,6 @@ public final class FeatureFlags {
     // 是否显示主屏幕设置菜单
     public static final boolean LAUNCHER_ENABLE_SETTING = false;
     // add by codemx.cn----20220911----end
+
+    public static final boolean LAUNCHER3_ENABLE_HOTSEAT = false;
 }
