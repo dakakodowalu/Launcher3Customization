@@ -403,4 +403,6 @@ public final class FeatureFlags {
     // add by codemx.cn----20220911----end
 
     public static final boolean LAUNCHER3_ENABLE_HOTSEAT = true;
+
+    public static final boolean LAUNCHER3_ENABLE_MYWIDGET = false;
 }

@@ -58,6 +58,7 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -175,46 +176,50 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
 
 
+        if(!FeatureFlags.LAUNCHER3_ENABLE_MYWIDGET){
+            super.updateAppWidget(remoteViews);
+        }else {
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.test, null, false);
+            surfaceView = view.findViewById(R.id.surface_view);
+            surfaceHolder = surfaceView.getHolder();
+            surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(@NonNull SurfaceHolder holder) {
 
-//        super.updateAppWidget(remoteViews);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.test, null, false);
-        surfaceView = view.findViewById(R.id.surface_view);
-        surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(@NonNull SurfaceHolder holder) {
+                }
 
-            }
-
-            @Override
-            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+                @Override
+                public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
 //                sendToOtherApp(holder.getSurface(), format, width, height);
 
-                Intent intent = new Intent(getContext(), SurfaceProviderService.class);
-                intent.putExtra("surface", surfaceView.getHolder().getSurface());
+                    Intent intent = new Intent(getContext(), SurfaceProviderService.class);
+                    intent.putExtra("surface", surfaceView.getHolder().getSurface());
 
-                ServiceConnection serviceConnection = new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder service) {
-                        Log.e(TAG, "onServiceConnected: ZGY");
-                        // 在这里可以执行与Service交互的操作
-                    }
+                    ServiceConnection serviceConnection = new ServiceConnection() {
+                        @Override
+                        public void onServiceConnected(ComponentName name, IBinder service) {
+                            Log.e(TAG, "onServiceConnected: ZGY");
+                            // 在这里可以执行与Service交互的操作
+                        }
 
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-                        // Service断开连接时的处理
-                    }
-                };
+                        @Override
+                        public void onServiceDisconnected(ComponentName name) {
+                            // Service断开连接时的处理
+                        }
+                    };
 
-                getContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-            }
+                    getContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+                }
 
-            @Override
-            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+                @Override
+                public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
 
-            }
-        });
-        addView(view);
+                }
+            });
+            addView(view);
+        }
+
+
         // The provider info or the views might have changed.
         checkIfAutoAdvance();
 
