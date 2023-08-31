@@ -1280,8 +1280,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
-        mHotseat = findViewById(R.id.hotseat);
-        mHotseat.setWorkspace(mWorkspace);
+
+        if(FeatureFlags.LAUNCHER3_ENABLE_HOTSEAT){
+            mHotseat = findViewById(R.id.hotseat);
+            mHotseat.setWorkspace(mWorkspace);
+        }
 
         // Setup the drag layer
         mDragLayer.setup(mDragController, mWorkspace);

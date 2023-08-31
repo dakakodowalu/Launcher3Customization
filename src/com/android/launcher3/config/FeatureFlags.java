@@ -402,5 +402,5 @@ public final class FeatureFlags {
     public static final boolean LAUNCHER_ENABLE_SETTING = false;
     // add by codemx.cn----20220911----end
 
-    public static final boolean LAUNCHER3_ENABLE_HOTSEAT = false;
+    public static final boolean LAUNCHER3_ENABLE_HOTSEAT = true;
 }
