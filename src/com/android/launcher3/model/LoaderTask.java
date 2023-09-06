@@ -29,7 +29,13 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Trace;
@@ -48,12 +54,14 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.folder.FolderNameProvider;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon.ComponentWithIconCachingLogic;
 import com.android.launcher3.icons.IconCache;
@@ -876,6 +884,30 @@ public class LoaderTask implements Runnable {
                         for (IconRequestInfo<WorkspaceItemInfo> iconRequestInfo :
                                 iconRequestInfos) {
                             WorkspaceItemInfo wai = iconRequestInfo.itemInfo;
+
+                            // 定义图像的宽度和高度
+                            int width = 200;
+                            int height = 200;
+                            // 创建一个空的 Bitmap 对象
+                            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                            // 创建一个 Canvas 对象，将 Bitmap 绑定到 Canvas 上
+                            Canvas canvas = new Canvas(bitmap);
+                            // 创建一个 Paint 对象，用于绘制图像
+                            Paint paint = new Paint();
+                            // 定义左边和右边的颜色
+                            int leftColor = Color.RED;
+                            int rightColor = Color.BLUE;
+                            // 绘制左边的圆形区域
+                            RectF leftRect = new RectF(0, 0, width / 2, height);
+                            paint.setColor(leftColor);
+                            canvas.drawArc(leftRect, 90, 180, true, paint);
+                            // 绘制右边的圆形区域
+                            RectF rightRect = new RectF(width / 2, 0, width, height);
+                            paint.setColor(rightColor);
+                            canvas.drawArc(rightRect, -90, 180, true, paint);
+
+                            iconRequestInfo.itemInfo.bitmap = new BitmapInfo(bitmap, iconRequestInfo.itemInfo.bitmap.color) ;
+
                             if (mIconCache.isDefaultIcon(wai.bitmap, wai.user)) {
                                 iconRequestInfo.loadWorkspaceIcon(mApp.getContext());
                             }

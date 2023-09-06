@@ -128,6 +128,7 @@ public class FastBitmapDrawable extends Drawable implements Drawable.Callback {
     }
 
     protected void drawInternal(Canvas canvas, Rect bounds) {
+        //绘制图标？
         canvas.drawBitmap(mBitmap, null, bounds, mPaint);
     }
 
