@@ -20,6 +20,9 @@ import static android.graphics.BitmapFactory.decodeByteArray;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -85,6 +88,8 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
                     "loadWorkspaceIcon should only be use for a WorkspaceItemInfos: " + itemInfo);
         }
 
+        Bitmap customIcon = getIconBitmap("chatbot-4071274_640");
+
         try (LauncherIcons li = LauncherIcons.obtain(context)) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) itemInfo;
             if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -113,5 +118,26 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
                 return false;
             }
         }
+    }
+
+
+    public Bitmap getIconBitmap(String packageName) {
+        String folderPath = Environment.getExternalStorageDirectory().getPath() + "/icons";
+        String iconFileName = packageName + ".png"; // 假设图标文件的扩展名为png
+
+        String iconFilePath = folderPath + "/" + iconFileName;
+
+        Bitmap iconBitmap = null;
+
+        try {
+            // 尝试从文件路径中解码位图
+            iconBitmap = BitmapFactory.decodeFile(iconFilePath);
+        } catch (Exception e) {
+            // 处理异常或文件不存在的情况
+            Log.e(TAG, "getIconBitmap: dont have " + packageName);
+            e.printStackTrace();
+        }
+
+        return iconBitmap;
     }
 }

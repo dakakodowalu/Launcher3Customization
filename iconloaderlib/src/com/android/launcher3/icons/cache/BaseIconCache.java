@@ -352,18 +352,22 @@ public abstract class BaseIconCache {
         assertWorkerThread();
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
+
+        // 如果缓存项为空或者缓存项是低分辨率图标且不使用低分辨率图标，则创建新的缓存项
         if (entry == null || (entry.bitmap.isLowRes() && !useLowResIcon)) {
             entry = new CacheEntry();
             if (cachingLogic.addToMemCache()) {
                 mCache.put(cacheKey, entry);
             }
 
-            // Check the DB first.
+            // 首先检查数据库
             T object = null;
             boolean providerFetchedOnce = false;
             boolean cacheEntryUpdated = cursor == null
                     ? getEntryFromDBLocked(cacheKey, entry, useLowResIcon)
                     : updateTitleAndIconLocked(cacheKey, entry, cursor, useLowResIcon);
+
+            // 如果数据库中没有更新缓存项，则使用备用方式加载图标
             if (!cacheEntryUpdated) {
                 object = infoProvider.get();
                 providerFetchedOnce = true;
@@ -378,6 +382,7 @@ public abstract class BaseIconCache {
                         user);
             }
 
+            // 如果缓存项的标题为空，则使用备用方式加载标题
             if (TextUtils.isEmpty(entry.title)) {
                 if (object == null && !providerFetchedOnce) {
                     object = infoProvider.get();

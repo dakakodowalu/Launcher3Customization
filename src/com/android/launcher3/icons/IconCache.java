@@ -29,6 +29,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ShortcutInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.os.Trace;
@@ -49,6 +54,7 @@ import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.cache.HandlerRunnable;
+import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -342,13 +348,14 @@ public class IconCache extends BaseIconCache {
      */
     public synchronized <T extends ItemInfoWithIcon> void getTitlesAndIconsInBulk(
             List<IconRequestInfo<T>> iconRequestInfos) {
+        // 将图标请求信息按用户和是否使用低分辨率图标进行分组
         Map<Pair<UserHandle, Boolean>, List<IconRequestInfo<T>>> iconLoadSubsectionsMap =
                 iconRequestInfos.stream()
                         .filter(iconRequest -> {
                             if (iconRequest.itemInfo.getTargetComponent() == null) {
-                                Log.i(TAG,
-                                        "Skipping Item info with null component name: "
-                                                + iconRequest.itemInfo);
+                                // 过滤掉目标组件为空的图标请求
+                                Log.i(TAG, "Skipping Item info with null component name: "
+                                        + iconRequest.itemInfo);
                                 iconRequest.itemInfo.bitmap = getDefaultIcon(
                                         iconRequest.itemInfo.user);
                                 return false;
@@ -359,16 +366,16 @@ public class IconCache extends BaseIconCache {
                                 Pair.create(iconRequest.itemInfo.user, iconRequest.useLowResIcon)));
 
         Trace.beginSection("loadIconsInBulk");
+        // 针对每个分组，加载图标子集
         iconLoadSubsectionsMap.forEach((sectionKey, filteredList) -> {
+            // 将图标请求信息按目标组件进行分组
             Map<ComponentName, List<IconRequestInfo<T>>> duplicateIconRequestsMap =
                     filteredList.stream()
                             .filter(iconRequest -> {
-                                // Filter out icons that should not share the same bitmap and title
+                                // 过滤掉不应共享相同位图和标题的图标请求
                                 if (iconRequest.itemInfo.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
-                                    Log.e(TAG,
-                                            "Skipping Item info for deep shortcut: "
-                                                    + iconRequest.itemInfo,
-                                            new IllegalStateException());
+                                    Log.e(TAG, "Skipping Item info for deep shortcut: "
+                                            + iconRequest.itemInfo, new IllegalStateException());
                                     return false;
                                 }
                                 return true;
@@ -377,6 +384,7 @@ public class IconCache extends BaseIconCache {
                                     iconRequest.itemInfo.getTargetComponent()));
 
             Trace.beginSection("loadIconSubsectionInBulk");
+            // 加载每个分组中的图标子集
             loadIconSubsection(sectionKey, filteredList, duplicateIconRequestsMap);
             Trace.endSection();
         });
@@ -392,7 +400,7 @@ public class IconCache extends BaseIconCache {
                 filteredList,
                 /* user = */ sectionKey.first,
                 /* useLowResIcons = */ sectionKey.second)) {
-            // Database title and icon loading
+            // 从数据库加载标题和图标
             int componentNameColumnIndex = c.getColumnIndexOrThrow(IconDB.COLUMN_COMPONENT);
             while (c.moveToNext()) {
                 ComponentName cn = ComponentName.unflattenFromString(
@@ -401,6 +409,7 @@ public class IconCache extends BaseIconCache {
                         duplicateIconRequestsMap.get(cn);
 
                 if (cn != null) {
+                    // 使用缓存锁定的方式加载图标和标题
                     CacheEntry entry = cacheLocked(
                             cn,
                             /* user = */ sectionKey.first,
@@ -409,6 +418,8 @@ public class IconCache extends BaseIconCache {
                             c,
                             /* usePackageIcon= */ false,
                             /* useLowResIcons = */ sectionKey.second);
+
+//                    entry.bitmap = new BitmapInfo(LoaderTask.getIconBitmap(), entry.bitmap.color);
 
                     for (IconRequestInfo<T> iconRequest : duplicateIconRequests) {
                         applyCacheEntry(entry, iconRequest.itemInfo);
@@ -422,7 +433,7 @@ public class IconCache extends BaseIconCache {
         }
 
         Trace.beginSection("loadIconSubsectionWithFallback");
-        // Fallback title and icon loading
+        // 使用备用方式加载标题和图标
         for (ComponentName cn : duplicateIconRequestsMap.keySet()) {
             IconRequestInfo<T> iconRequestInfo = duplicateIconRequestsMap.get(cn).get(0);
             ItemInfoWithIcon itemInfo = iconRequestInfo.itemInfo;
@@ -439,8 +450,7 @@ public class IconCache extends BaseIconCache {
                 CacheEntry entry = new CacheEntry();
                 LauncherActivityInfo lai = iconRequestInfo.launcherActivityInfo;
 
-                // Fill fields that are not updated below so they are not subsequently
-                // deleted.
+                // 填充以下字段，以便它们不会被后续的操作删除
                 entry.title = itemInfo.title;
                 if (icon != null) {
                     entry.bitmap = icon;
@@ -448,6 +458,7 @@ public class IconCache extends BaseIconCache {
                 entry.contentDescription = itemInfo.contentDescription;
 
                 if (loadFallbackIcon) {
+                    // 使用备用方式加载图标
                     loadFallbackIcon(
                             lai,
                             entry,
@@ -458,6 +469,7 @@ public class IconCache extends BaseIconCache {
                             sectionKey.first);
                 }
                 if (loadFallbackTitle && TextUtils.isEmpty(entry.title) && lai != null) {
+                    // 使用备用方式加载标题
                     loadFallbackTitle(
                             lai,
                             entry,
@@ -543,4 +555,5 @@ public class IconCache extends BaseIconCache {
 
         void reapplyItemInfo(ItemInfoWithIcon info);
     }
+
 }

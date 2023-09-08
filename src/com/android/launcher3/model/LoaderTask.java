@@ -38,6 +38,7 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -880,33 +881,17 @@ public class LoaderTask implements Runnable {
                 if (FeatureFlags.ENABLE_BULK_WORKSPACE_ICON_LOADING.get()) {
                     Trace.beginSection("LoadWorkspaceIconsInBulk");
                     try {
+                        //ENABLE_BULK_WORKSPACE_ICON_LOADING就会在这里一次性批量加载图标
                         mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
                         for (IconRequestInfo<WorkspaceItemInfo> iconRequestInfo :
                                 iconRequestInfos) {
                             WorkspaceItemInfo wai = iconRequestInfo.itemInfo;
 
-                            // 定义图像的宽度和高度
-                            int width = 200;
-                            int height = 200;
-                            // 创建一个空的 Bitmap 对象
-                            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                            // 创建一个 Canvas 对象，将 Bitmap 绑定到 Canvas 上
-                            Canvas canvas = new Canvas(bitmap);
-                            // 创建一个 Paint 对象，用于绘制图像
-                            Paint paint = new Paint();
-                            // 定义左边和右边的颜色
-                            int leftColor = Color.RED;
-                            int rightColor = Color.BLUE;
-                            // 绘制左边的圆形区域
-                            RectF leftRect = new RectF(0, 0, width / 2, height);
-                            paint.setColor(leftColor);
-                            canvas.drawArc(leftRect, 90, 180, true, paint);
-                            // 绘制右边的圆形区域
-                            RectF rightRect = new RectF(width / 2, 0, width, height);
-                            paint.setColor(rightColor);
-                            canvas.drawArc(rightRect, -90, 180, true, paint);
-
-                            iconRequestInfo.itemInfo.bitmap = new BitmapInfo(bitmap, iconRequestInfo.itemInfo.bitmap.color) ;
+                            //在此处可以替换所有icon
+                            Bitmap bi = getIconBitmap(iconRequestInfo.itemInfo.intent.getPackage());
+                            if(bi != null){
+                                iconRequestInfo.itemInfo.bitmap = new BitmapInfo(bi, iconRequestInfo.itemInfo.bitmap.color);
+                            }
 
                             if (mIconCache.isDefaultIcon(wai.bitmap, wai.user)) {
                                 iconRequestInfo.loadWorkspaceIcon(mApp.getContext());
@@ -1084,7 +1069,6 @@ public class LoaderTask implements Runnable {
         mBgAllAppsList.setFlags(FLAG_QUIET_MODE_CHANGE_PERMISSION,
                 mApp.getContext().checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
                         == PackageManager.PERMISSION_GRANTED);
-
         mBgAllAppsList.getAndResetChangeFlag();
         return allActivityList;
     }
@@ -1180,4 +1164,51 @@ public class LoaderTask implements Runnable {
             Log.d(TAG, label);
         }
     }
+
+
+    public static Bitmap getTestBitmap(){
+        // 定义图像的宽度和高度
+        int width = 200;
+        int height = 200;
+        // 创建一个空的 Bitmap 对象
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        // 创建一个 Canvas 对象，将 Bitmap 绑定到 Canvas 上
+        Canvas canvas = new Canvas(bitmap);
+        // 创建一个 Paint 对象，用于绘制图像
+        Paint paint = new Paint();
+        // 定义左边和右边的颜色
+        int leftColor = Color.RED;
+        int rightColor = Color.BLUE;
+        // 绘制左边的圆形区域
+        RectF leftRect = new RectF(0, 0, width / 2, height);
+        paint.setColor(leftColor);
+        canvas.drawArc(leftRect, 90, 180, true, paint);
+        // 绘制右边的圆形区域
+        RectF rightRect = new RectF(width / 2, 0, width, height);
+        paint.setColor(rightColor);
+        canvas.drawArc(rightRect, -90, 180, true, paint);
+
+        return bitmap;
+    }
+
+    public Bitmap getIconBitmap(String packageName) {
+        String folderPath = mApp.getContext().getFilesDir().getPath() + "/icons";
+        String iconFileName = packageName + ".png"; // 假设图标文件的扩展名为png
+
+        String iconFilePath = folderPath + "/" + iconFileName;
+
+        Bitmap iconBitmap = null;
+
+        try {
+            // 尝试从文件路径中解码位图
+            iconBitmap = BitmapFactory.decodeFile(iconFilePath);
+        } catch (Exception e) {
+            // 处理异常或文件不存在的情况
+            Log.e(TAG, "getIconBitmap: dont have " + packageName);
+            e.printStackTrace();
+        }
+
+        return iconBitmap;
+    }
+
 }
