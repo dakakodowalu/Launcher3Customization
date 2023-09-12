@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -357,7 +358,11 @@ public abstract class DragController<T extends ActivityContext>
     @Override
     public void onDriverDragMove(float x, float y) {
         Point dragLayerPos = getClampedDragLayerPos(x, y);
-        handleMoveEvent(dragLayerPos.x, dragLayerPos.y);
+        //删除拖拽
+        if(FeatureFlags.LAUNCHER3_ENABLE_DRAG){
+            handleMoveEvent(dragLayerPos.x, dragLayerPos.y);
+        }
+
     }
 
     @Override

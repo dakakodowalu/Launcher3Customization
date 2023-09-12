@@ -1686,6 +1686,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         final DragView dv;
+        //删除照片的拖拽
+        //返回null则长按后消失
+        if(dragObject.getTargetPackage().contentEquals("com.google.android.apps.photos")){
+//            return null;
+        }
         if (contentView instanceof View) {
             if (contentView instanceof LauncherAppWidgetHostView) {
                 mDragController.addDragListener(new AppWidgetHostViewDragListener(mLauncher));

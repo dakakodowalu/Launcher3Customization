@@ -560,9 +560,19 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         setTitle(R.string.home_screen);
 
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+//        int uiFlags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION/* | View.SYSTEM_UI_FLAG_FULLSCREEN*/;
+//        getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+//        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(
+//                new View.OnSystemUiVisibilityChangeListener() {
+//                    @Override
+//                    public void onSystemUiVisibilityChange(int visibility) {
+//                        if (visibility == 0) {
+//                            // UI可见性变化时重新隐藏导航栏和状态栏
+//                            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+//                        }
+//                    }
+//                }
+//        );
 
         setIminWidget();
     }

@@ -1,0 +1,10 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+ItemLongClickListener -> Workspace: startDrag()
+Workspace -> Workspace: beginDragShared()
+Workspace -> LauncherDragController: startDrag()
+
+@enduml

@@ -36,6 +36,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestProtocol;
 
@@ -78,18 +79,18 @@ public class LauncherDragController extends DragController<Launcher> {
      */
     @Override
     protected DragView startDrag(
-            @Nullable Drawable drawable,
-            @Nullable View view,
-            DraggableView originalView,
-            int dragLayerX,
-            int dragLayerY,
-            DragSource source,
-            ItemInfo dragInfo,
-            Point dragOffset,
-            Rect dragRegion,
-            float initialDragViewScale,
-            float dragViewScaleOnDrop,
-            DragOptions options) {
+            @Nullable Drawable drawable,  // 可拖拽视图的可绘制对象
+            @Nullable View view,  // 可拖拽视图的视图对象
+            DraggableView originalView,  // 原始视图对象
+            int dragLayerX,  // 拖拽层的x坐标
+            int dragLayerY,  // 拖拽层的y坐标
+            DragSource source,  // 拖拽源对象
+            ItemInfo dragInfo,  // 拖拽项的信息
+            Point dragOffset,  // 拖拽视图的偏移量
+            Rect dragRegion,  // 拖拽区域的矩形
+            float initialDragViewScale,  // 初始拖拽视图的缩放比例
+            float dragViewScaleOnDrop,  // 放置时拖拽视图的缩放比例
+            DragOptions options) {  // 拖拽选项
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.NO_DROP_TARGET, "5");
         }
@@ -97,6 +98,7 @@ public class LauncherDragController extends DragController<Launcher> {
             android.os.Debug.startMethodTracing("Launcher");
         }
 
+        // 隐藏键盘和关闭打开的视图
         mActivity.hideKeyboard();
         AbstractFloatingView.closeOpenViews(mActivity, false, TYPE_DISCOVERY_BOUNCE);
 
@@ -114,15 +116,17 @@ public class LauncherDragController extends DragController<Launcher> {
 
         mLastDropTarget = null;
 
+        // 创建拖拽对象
         mDragObject = new DropTarget.DragObject(mActivity.getApplicationContext());
         mDragObject.originalView = originalView;
 
-        mIsInPreDrag = mOptions.preDragCondition != null
-                && !mOptions.preDragCondition.shouldStartDrag(0);
+        // 在预拖拽状态下
+        mIsInPreDrag = mOptions.preDragCondition != null && !mOptions.preDragCondition.shouldStartDrag(0);
 
         final Resources res = mActivity.getResources();
-        final float scaleDps = mIsInPreDrag
-                ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
+        final float scaleDps = mIsInPreDrag ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
+
+        // 创建拖拽视图
         final DragView dragView = mDragObject.dragView = drawable != null
                 ? new LauncherDragView(
                 mActivity,
@@ -133,15 +137,15 @@ public class LauncherDragController extends DragController<Launcher> {
                 dragViewScaleOnDrop,
                 scaleDps)
                 : new LauncherDragView(
-                        mActivity,
-                        view,
-                        view.getMeasuredWidth(),
-                        view.getMeasuredHeight(),
-                        registrationX,
-                        registrationY,
-                        initialDragViewScale,
-                        dragViewScaleOnDrop,
-                        scaleDps);
+                mActivity,
+                view,
+                view.getMeasuredWidth(),
+                view.getMeasuredHeight(),
+                registrationX,
+                registrationY,
+                initialDragViewScale,
+                dragViewScaleOnDrop,
+                scaleDps);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
 
@@ -164,6 +168,7 @@ public class LauncherDragController extends DragController<Launcher> {
             dragView.setDragRegion(new Rect(dragRegion));
         }
 
+        // 执行长按反馈
         mActivity.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mLastTouch.x, mLastTouch.y);
         mDistanceSinceScroll = 0;
@@ -174,10 +179,12 @@ public class LauncherDragController extends DragController<Launcher> {
             mOptions.preDragCondition.onPreDragStart(mDragObject);
         }
 
-        handleMoveEvent(mLastTouch.x, mLastTouch.y);
+        if(FeatureFlags.LAUNCHER3_ENABLE_DRAG){
+            handleMoveEvent(mLastTouch.x, mLastTouch.y);
+        }
 
         if (!mActivity.isTouchInProgress() && options.simulatedDndStartPoint == null) {
-            // If it is an internal drag and the touch is already complete, cancel immediately
+            // 如果是内部拖拽并且触摸已经完成，立即取消拖拽
             MAIN_EXECUTOR.submit(this::cancelDrag);
         }
         return dragView;

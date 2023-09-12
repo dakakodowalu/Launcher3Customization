@@ -42,7 +42,8 @@
             android:screenOrientation="unspecified"
             android:stateNotNeeded="true"
             android:taskAffinity=""
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SHOW_WORK_APPS" />

@@ -405,4 +405,5 @@ public final class FeatureFlags {
     public static final boolean LAUNCHER3_ENABLE_HOTSEAT = true;
 
     public static final boolean LAUNCHER3_ENABLE_MYWIDGET = false;
+    public static final boolean LAUNCHER3_ENABLE_DRAG = false;
 }
